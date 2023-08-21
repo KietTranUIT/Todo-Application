@@ -23,3 +23,5 @@ Trong cuộc sống hiện đại, chúng ta luôn bận rộn với nhiều cô
 - Thêm ghi chú cho công việc
 
 <strong>Công nghệ sử dụng:</strong> Golang, MySQL
+
+Date begin: 21/08/2023
