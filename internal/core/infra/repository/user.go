@@ -17,8 +17,9 @@ type UserRepo struct {
 }
 
 var (
-	InsertUserStatement       = "INSERT INTO USER_ACCOUNT VALUES ('%s', '%s', '%s', '%s', '%s')"
-	GetUserWithEmailStatement = "SELECT * FROM USER_ACCOUNT WHERE Email='%s'"
+	InsertUserStatement          = "INSERT INTO USER_ACCOUNT VALUES ('%s', '%s', '%s', '%s', '%s')"
+	GetUserWithEmailStatement    = "SELECT * FROM USER_ACCOUNT WHERE Email='%s'"
+	GetUserWithUsernameStatement = "SELECT * FROM USER_ACCOUNT WHERE Username='%s'"
 
 	InsertVerificationEmailStatement = "INSERT INTO VERIFICATION_EMAIL VALUES ('%s', '%s', '%s', '%s', '%d')"
 	GetVerificationEmailStatement    = "SELECT * FROM VERIFICATION_EMAIL WHERE Email='%s'"
@@ -144,6 +145,29 @@ func (u UserRepo) GetVerifyEmailData(email string) (*dto.VerifyEmailDTO, error) 
 	return &verifyData, nil
 }
 
+func (u UserRepo) GetUserWithUsername(username string) (*dto.UserDTO, error) {
+	row := u.db.GetDB().QueryRow(fmt.Sprintf(GetUserWithUsernameStatement, username))
+
+	var user dto.UserDTO
+	var createDate, updateDate string
+
+	err := row.Scan(
+		&user.Email,
+		&user.Username,
+		&user.Password,
+		&createDate,
+		&updateDate,
+	)
+	if err != nil {
+		return nil, notExistUserData
+	}
+
+	user.CreateDate, _ = time.Parse("2006-01-02 15:04:05", createDate)
+	user.UpdateDate, _ = time.Parse("2006-01-02 15:04:05", updateDate)
+
+	return &user, nil
+}
+
 func (u UserRepo) GetUserWithEmail(email string) (*dto.UserDTO, error) {
 	row := u.db.GetDB().QueryRow(fmt.Sprintf(GetUserWithEmailStatement, email))
 
@@ -164,12 +188,10 @@ func (u UserRepo) GetUserWithEmail(email string) (*dto.UserDTO, error) {
 
 	if err != nil {
 		return nil, err
-
 	}
 
 	user.CreateDate, _ = time.Parse("2006-01-02 15:04:05", createDate)
 	user.UpdateDate, _ = time.Parse("2006-01-02 15:04:05", updateDate)
-	fmt.Println(user)
 
 	return &user, nil
 }

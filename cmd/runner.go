@@ -10,9 +10,9 @@ import (
 )
 
 func main() {
+	log.Println("Server is running ...")
 	var configDatabase conf.ConfigDatabase
 	configDatabase.NewConfigDatabase()
-	log.Println(configDatabase)
 	db, err := repository.NewDB(configDatabase)
 
 	if err != nil {

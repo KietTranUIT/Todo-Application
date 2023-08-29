@@ -30,6 +30,23 @@ func NewUserService(userRepo repository.UserRepository, mail service.MailService
 	}
 }
 
+func (u UserService) Signin(req request.RequestSignin) *response.Response {
+	user, err := u.service.GetUserWithUsername(req.Username)
+
+	if err != nil {
+		if err.Error() == "Not exist User" {
+			return CreateFailResponse(entity.NotExistUserMsg, entity.NotExistUserError)
+		}
+		return CreateFailResponse(entity.InternalErrorMsg, entity.InternalErrorCode)
+	}
+
+	if user.Password != req.Password {
+		return CreateFailResponse(entity.WrongPasswordMsg, entity.WrongPasswordError)
+
+	}
+	return CreateSuccessResponse(entity.SuccessSingInMsg, entity.SuccessSignInError)
+}
+
 func (u UserService) SignUp(req request.RequestSignUp) *response.Response {
 	if user, _ := u.service.GetUserWithEmail(req.Email); user != nil {
 		return CreateFailResponse(entity.DuplicateUserMsg, entity.DuplicateErrorCode)
@@ -92,7 +109,7 @@ func (u UserService) SendVerificationEmail(req request.RequestSendVerificationEm
 	data, _ := u.service.GetUserWithEmail(req.Email)
 
 	if data != nil {
-		return CreateFailResponse(entity.DuplicateEmailMsg, entity.DuplicateErrorCode)
+		return CreateFailResponse(entity.DuplicateUserMsg, entity.DuplicateErrorCode)
 	}
 
 	code := common.GenerateRandomCode()

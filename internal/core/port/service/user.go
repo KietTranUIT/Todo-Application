@@ -7,6 +7,7 @@ import (
 
 type UserService interface {
 	SignUp(req request.RequestSignUp) *response.Response
+	Signin(req request.RequestSignin) *response.Response
 	SendVerificationEmail(req request.RequestSendVerificationEmail) *response.Response
 	VerifyEmail(string, string) (bool, error)
 }

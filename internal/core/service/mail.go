@@ -22,7 +22,6 @@ const (
 )
 
 func NewMailService(config conf.Config_MailService) service.MailService {
-	fmt.Println(config)
 	return MailService{
 		username: config.From,
 		url:      config.URL(),

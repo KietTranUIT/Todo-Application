@@ -11,9 +11,12 @@ const (
 	VerifyFailErrorCode     ErrorCode = "VERIFY FAILED"
 	VerifySuccess           ErrorCode = "VERIFY SUCCESS"
 	NotExistVerifyDataError ErrorCode = "NOT EXIST VERIFY DATA"
+	NotExistUserError       ErrorCode = "NOT EXIST USER"
 	SuccessInsertUser       ErrorCode = "SUCCESS INSERT USER"
 	WrongCode               ErrorCode = "WRONG CODE"
 	ExpiredCode             ErrorCode = "EXPIRED CODE"
+	WrongPasswordError      ErrorCode = "WRONG PASSWORD"
+	SuccessSignInError      ErrorCode = "SUCCESS SIGN IN"
 )
 
 const (
@@ -27,7 +30,10 @@ const (
 	VerifyFailErrorMsg    string = "verify failed"
 	VerifySuccessMsg      string = "verify success"
 	NotExistVerifyDataMsg string = "not exist verify data"
+	NotExistUserMsg       string = "not exist user"
 	SuccessInsertUserMsg  string = "success insert user"
 	WrongCodeMsg          string = "wrong code"
 	ExpiredCodeMsg        string = "code expired"
+	WrongPasswordMsg      string = "wrong password"
+	SuccessSingInMsg      string = "success sign in"
 )

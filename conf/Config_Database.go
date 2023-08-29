@@ -29,7 +29,6 @@ func (conf *ConfigDatabase) NewConfigDatabase() {
 	conf.dbHost = os.Getenv("dbHost")
 	conf.dbPort = os.Getenv("dbPort")
 	conf.dbName = os.Getenv("dbName")
-	fmt.Println(conf)
 }
 
 func (conf ConfigDatabase) GetURL() string {

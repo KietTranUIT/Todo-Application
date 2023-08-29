@@ -72,7 +72,7 @@ func SignUp(u UserController) http.HandlerFunc {
 			w.Header().Add("Content-Type", "application/json")
 
 			if res.Status {
-				w.WriteHeader(http.StatusOK)
+				w.WriteHeader(http.StatusCreated)
 			} else {
 				if res.Err_code == entity.InternalErrorCode {
 					w.WriteHeader(http.StatusInternalServerError)
@@ -82,6 +82,39 @@ func SignUp(u UserController) http.HandlerFunc {
 
 			}
 
+			w.Write(resJson)
+		}
+	}
+}
+
+func SignIn(u UserController) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			http.ServeFile(w, r, "view/signin.html")
+		} else if r.Method == "POST" {
+			reqBody, err := ioutil.ReadAll(r.Body)
+
+			if err != nil {
+				log.Println(err.Error())
+			}
+
+			var req request.RequestSignin
+			json.Unmarshal(reqBody, &req)
+
+			res := u.service.Signin(req)
+			resJson, _ := json.Marshal(res)
+			w.Header().Add("Content-Type", "application/json")
+
+			if res.Status {
+				w.WriteHeader(http.StatusOK)
+			} else {
+				if res.Err_code == entity.InternalErrorCode {
+					w.WriteHeader(http.StatusInternalServerError)
+				} else {
+					w.WriteHeader(http.StatusUnprocessableEntity)
+				}
+
+			}
 			w.Write(resJson)
 		}
 	}

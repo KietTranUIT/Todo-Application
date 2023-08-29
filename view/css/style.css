@@ -1,0 +1,32 @@
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #222;
+      color: white;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    p {
+      color: #ccc;
+    }
+
+    .app-link {
+      color: #00aaff;
+      text-decoration: none;
+    }
+
+    .app-link:hover {
+      text-decoration: underline;
+    }
