@@ -119,3 +119,36 @@ func SignIn(u UserController) http.HandlerFunc {
 		}
 	}
 }
+
+func Home(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "view/home.html")
+}
+
+func CreateCategory(u UserController) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		reqBody, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			log.Println(err.Error())
+		}
+
+		var req request.RequestCreateCategory
+		json.Unmarshal(reqBody, &req)
+
+		res := u.service.CreateCategory(req)
+		resJson, _ := json.Marshal(res)
+		w.Header().Add("Content-Type", "application/json")
+
+		if res.Status {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			if res.Err_code == entity.InternalErrorCode {
+				w.WriteHeader(http.StatusInternalServerError)
+			} else {
+				w.WriteHeader(http.StatusUnprocessableEntity)
+			}
+
+		}
+		w.Write(resJson)
+	}
+}

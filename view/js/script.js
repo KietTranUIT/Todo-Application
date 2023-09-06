@@ -1,3 +1,18 @@
+
+function GetHomePage(username) {
+  fetch('/home', {
+    method: 'GET'
+  })
+  .then(response => {
+    if(response.ok) {
+      localStorage.setItem('username', username);
+      window.location.href = response.url;
+    } else {
+      console.error('Yêu cầu không thành công. Mã trạng thái HTTP:', response.status);
+    }
+  })
+}
+
 function GetSignUpPage() {
     fetch('/signup', {
         method: 'GET'
@@ -51,6 +66,7 @@ function SignIn() {
       }
     } else {
       alert("Login success")
+      GetHomePage(form.username)
     }
   })
 }

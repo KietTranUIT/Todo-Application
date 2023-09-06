@@ -24,4 +24,6 @@ func (u UserController) Router() {
 	u.Mux.HandleFunc("/sendmail", SendVerifyEmail(u))
 	u.Mux.HandleFunc("/verify", VerifyEmail(u))
 	u.Mux.HandleFunc("/signin", SignIn(u))
+	u.Mux.HandleFunc("/home", Home)
+	u.Mux.HandleFunc("/createcategory", CreateCategory(u))
 }

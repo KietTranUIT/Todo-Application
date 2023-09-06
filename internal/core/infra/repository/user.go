@@ -20,6 +20,7 @@ var (
 	InsertUserStatement          = "INSERT INTO USER_ACCOUNT VALUES ('%s', '%s', '%s', '%s', '%s')"
 	GetUserWithEmailStatement    = "SELECT * FROM USER_ACCOUNT WHERE Email='%s'"
 	GetUserWithUsernameStatement = "SELECT * FROM USER_ACCOUNT WHERE Username='%s'"
+	InsertCategoryStatement      = "INSERT INTO CATEGORY VALUES ('%s', '%s', '%s', '%s', '%d', '%s', '%s')"
 
 	InsertVerificationEmailStatement = "INSERT INTO VERIFICATION_EMAIL VALUES ('%s', '%s', '%s', '%s', '%d')"
 	GetVerificationEmailStatement    = "SELECT * FROM VERIFICATION_EMAIL WHERE Email='%s'"
@@ -31,11 +32,12 @@ const (
 )
 
 var (
-	duplicateError     = errors.New("Duplicate Verificate Email")
-	internalError      = errors.New("Internal Error")
-	rowAffectedError   = errors.New("Row Affected Error")
-	notExistVerifyData = errors.New("Not Verify Data")
-	notExistUserData   = errors.New("Not exist User")
+	duplicateError         = errors.New("Duplicate Verificate Email")
+	duplicateCategoryError = errors.New("Duplicate Category")
+	internalError          = errors.New("Internal Error")
+	rowAffectedError       = errors.New("Row Affected Error")
+	notExistVerifyData     = errors.New("Not Verify Data")
+	notExistUserData       = errors.New("Not exist User")
 )
 
 func NewUserRepo(db repository.Database) repository.UserRepository {
@@ -206,12 +208,39 @@ func (u UserRepo) DeleteVerifyData(email string) error {
 
 	rowAffected, err := result.RowsAffected()
 	if err != nil {
-		log.Println(err.Error())
 		return err
 	}
 
 	if rowAffected != 1 {
-		log.Println(err.Error())
+		return err
+	}
+	return nil
+}
+
+func (u UserRepo) InsertCategory(category dto.CategoryDTO) error {
+	result, err := u.db.GetDB().Exec(fmt.Sprintf(InsertCategoryStatement,
+		category.Id,
+		category.Owner,
+		category.Name,
+		category.Description,
+		category.Quantity,
+		category.Created_at.Format("2006-01-02 15:04:05"),
+		category.Updated_at.Format("2006-01-02 15:04:05"),
+	))
+
+	if err != nil {
+		if strings.Contains(err.Error(), duplicateEntry) {
+			return duplicateCategoryError
+		}
+		return internalError
+	}
+
+	rowAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowAffected != 1 {
 		return err
 	}
 	return nil

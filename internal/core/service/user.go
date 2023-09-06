@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"time"
 	"user-service/internal/common"
 	"user-service/internal/core/dto"
@@ -76,12 +75,10 @@ func (u UserService) SignUp(req request.RequestSignUp) *response.Response {
 	err := u.service.InsertUser(user)
 
 	if err != nil {
-		fmt.Println("IK")
 		return CreateFailResponse(entity.InternalErrorMsg, entity.InternalErrorCode)
 	}
 
 	if err := u.service.DeleteVerifyData(user.Email); err != nil {
-		fmt.Println("ok")
 		return CreateFailResponse(entity.InternalErrorMsg, entity.InternalErrorCode)
 	}
 
@@ -137,6 +134,28 @@ func (u UserService) SendVerificationEmail(req request.RequestSendVerificationEm
 	}
 
 	return CreateSuccessResponse(entity.SuccessInsertCodeMsg, entity.SuccessInsertCode)
+}
+
+func (u UserService) CreateCategory(req request.RequestCreateCategory) *response.Response {
+	category := dto.CategoryDTO{
+		Id:          common.Hash(req.Name + req.Owner),
+		Owner:       req.Owner,
+		Name:        req.Name,
+		Description: req.Description,
+		Quantity:    0,
+		Created_at:  time.Now(),
+		Updated_at:  time.Now(),
+	}
+
+	err := u.service.InsertCategory(category)
+
+	if err != nil {
+		if err.Error() == "Duplicate Category" {
+			return CreateFailResponse(entity.DuplicateCategoryMsg, entity.DuplicateErrorCode)
+		}
+		return CreateFailResponse(entity.InternalErrorMsg, entity.InternalErrorCode)
+	}
+	return CreateSuccessResponse(entity.SuccessInsertCategoryMsg, entity.SuccessInsertCategory)
 }
 
 func CreateFailResponse(message string, err entity.ErrorCode) *response.Response {

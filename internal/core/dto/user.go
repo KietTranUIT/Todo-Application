@@ -20,6 +20,16 @@ type VerifyEmailDTO struct {
 	IsVerified uint
 }
 
+type CategoryDTO struct {
+	Id          string
+	Owner       string
+	Name        string
+	Description string
+	Quantity    uint
+	Created_at  time.Time
+	Updated_at  time.Time
+}
+
 type MailData struct {
 	From    string
 	To      []string
